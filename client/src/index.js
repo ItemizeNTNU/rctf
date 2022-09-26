@@ -23,10 +23,10 @@ import { ToastProvider } from './components/toast'
 
 function useTriggerRerender () {
   const setToggle = useState(false)[1]
-  return useCallback(() => setToggle(t => !t), [setToggle])
+  return useCallback(() => setToggle((t) => !t), [setToggle])
 }
 
-const makeRedir = to => () => {
+const makeRedir = (to) => () => {
   useEffect(() => route(to, true), [])
   return null
 }
@@ -59,29 +59,21 @@ function App ({ classes }) {
     <CtftimeCallback key='ctftimeCallback' path='/integrations/ctftime/callback' />
   ]
 
-  loggedInPaths.forEach(route => loggedOutPaths.push(
-    <LoggedOutRedir
-      key={`loggedOutRedir-${route.props.path}`}
-      path={route.props.path}
-    />
-  ))
-  loggedOutPaths.forEach(route => loggedInPaths.push(
-    <LoggedInRedir
-      key={`loggedInRedir-${route.props.path}`}
-      path={route.props.path}
-    />
-  ))
+  loggedInPaths.forEach((route) =>
+    loggedOutPaths.push(<LoggedOutRedir key={`loggedOutRedir-${route.props.path}`} path={route.props.path} />)
+  )
+  loggedOutPaths.forEach((route) =>
+    loggedInPaths.push(<LoggedInRedir key={`loggedInRedir-${route.props.path}`} path={route.props.path} />)
+  )
   const currentPaths = [...allPaths, ...(loggedOut ? loggedOutPaths : loggedInPaths)]
-  const headerPaths = currentPaths.filter(route => route.props.name !== undefined)
+  const headerPaths = currentPaths.filter((route) => route.props.name !== undefined)
 
   return (
     <div class={classes.root}>
       <ToastProvider>
         <Header paths={headerPaths} />
         <div class={classes.contentWrapper}>
-          <Router onChange={triggerRerender}>
-            {currentPaths}
-          </Router>
+          <Router onChange={triggerRerender}>{currentPaths}</Router>
         </div>
         <Footer />
       </ToastProvider>
@@ -89,53 +81,69 @@ function App ({ classes }) {
   )
 }
 
-export default withStyles({
-  '@global body': {
-    overflowX: 'hidden'
-  },
-  // we show the google legal notice on each protected form
-  '@global .grecaptcha-badge': {
-    visibility: 'hidden'
-  },
-  // cirrus makes recaptcha position the modal incorrectly, so we reset it here
-  '@global body > div[style*="position: absolute"]': {
-    top: '10px !important'
-  },
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100%',
-    background: '#111',
-    color: '#fff',
-    '& *:not(code):not(pre)': {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Noto Sans", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important'
+export default withStyles(
+  {
+    '@global body': {
+      overflowX: 'hidden'
     },
-    '& pre.code': {
-      padding: '10px',
-      background: 'var(--cirrus-code-bg)',
-      borderRadius: '5px',
-      margin: '10px 0',
-      color: '#ccc',
-      border: '1px solid #ffffff1a'
+    // we show the google legal notice on each protected form
+    '@global .grecaptcha-badge': {
+      visibility: 'hidden'
     },
-    '& code': {
-      padding: '.2em .4em',
-      background: 'var(--cirrus-code-bg)',
-      borderRadius: '3px',
-      color: '#ccc',
-      border: '1px solid #ffffff1a'
+    // cirrus makes recaptcha position the modal incorrectly, so we reset it here
+    '@global body > div[style*="position: absolute"]': {
+      top: '10px !important'
+    },
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100%',
+      background: '#111',
+      color: '#fff',
+      '& *:not(code):not(pre)': {
+        fontFamily:
+          '"Alata", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Noto Sans", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important'
+      },
+      '& pre.code': {
+        padding: '10px',
+        background: 'var(--cirrus-code-bg)',
+        borderRadius: '5px',
+        margin: '10px 0',
+        color: '#ccc',
+        border: '1px solid #ffffff1a'
+      },
+      '& code': {
+        padding: '.2em .4em',
+        background: 'var(--cirrus-code-bg)',
+        borderRadius: '3px',
+        color: '#ccc',
+        border: '1px solid #ffffff1a'
+      },
+      '& h1, & h2, & h3, & h4, & h5': {
+        fontFamily: 'var(--header-font)'
+      }
+    },
+    '@global select': {
+      background:
+        "url(\"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%205'%3E%3Cpath%20fill='%23667189'%20d='M2%200L0%202h4zm0%205L0%203h4z'/%3E%3C/svg%3E\") right .85rem center/.5rem .6rem no-repeat no-repeat #111 !important"
+    },
+    '@global :root': {
+      '--cirrus-link': '#72b4e0',
+      '--cirrus-link-dark': '#277edb',
+      '--cirrus-select-bg': 'rgba(0, 161, 255, 0.4)',
+      '--cirrus-code-bg': '#333',
+
+      // Custom itemize colors
+      '--cirrus-primary': '#3cb34f',
+      '--cirrus-primary-light': '#d5ffdc',
+      '--cirrus-accent-hover': '#159545',
+      '--cirrus-accent-border': '#0f6539',
+      '--header-font': "'Exo'",
+      '--body-font': "'Alata'"
+    },
+    contentWrapper: {
+      flex: '1 0 auto'
     }
   },
-  '@global select': {
-    background: 'url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns=\'http://www.w3.org/2000/svg\'%20viewBox=\'0%200%204%205\'%3E%3Cpath%20fill=\'%23667189\'%20d=\'M2%200L0%202h4zm0%205L0%203h4z\'/%3E%3C/svg%3E") right .85rem center/.5rem .6rem no-repeat no-repeat #111 !important'
-  },
-  '@global :root': {
-    '--cirrus-link': '#72b4e0',
-    '--cirrus-link-dark': '#277edb',
-    '--cirrus-select-bg': 'rgba(0, 161, 255, 0.4)',
-    '--cirrus-code-bg': '#333'
-  },
-  contentWrapper: {
-    flex: '1 0 auto'
-  }
-}, App)
+  App
+)
