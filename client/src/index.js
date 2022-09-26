@@ -21,7 +21,7 @@ import AdminChallenges from './routes/admin/challs'
 
 import { ToastProvider } from './components/toast'
 
-function useTriggerRerender () {
+const useTriggerRerender = () => {
   const setToggle = useState(false)[1]
   return useCallback(() => setToggle((t) => !t), [setToggle])
 }
@@ -33,7 +33,7 @@ const makeRedir = (to) => () => {
 const LoggedOutRedir = makeRedir('/')
 const LoggedInRedir = makeRedir('/profile')
 
-function App ({ classes }) {
+const App = ({ classes }) => {
   const triggerRerender = useTriggerRerender()
 
   const loggedOut = !localStorage.token

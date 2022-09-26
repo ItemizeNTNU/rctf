@@ -2,7 +2,7 @@ import Match from 'preact-router/match'
 import withStyles from './jss'
 import LogoutButton from './logout-button'
 
-function Header ({ classes, paths }) {
+const Header = ({ classes, paths }) => {
   const loggedIn = localStorage.getItem('token') !== null
 
   return (
