@@ -23,13 +23,13 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
   const hasError = error !== undefined
 
   const [value, setValue] = useState('')
-  const handleInputChange = useCallback(e => setValue(e.target.value), [])
+  const handleInputChange = useCallback((e) => setValue(e.target.value), [])
 
-  const handleSubmit = useCallback(e => {
-    e.preventDefault()
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
 
-    submitFlag(problem.id, value.trim())
-      .then(({ error }) => {
+      submitFlag(problem.id, value.trim()).then(({ error }) => {
         if (error === undefined) {
           toast({ body: 'Flag successfully submitted!' })
 
@@ -39,59 +39,75 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
           setError(error)
         }
       })
-  }, [toast, setSolved, problem, value])
+    },
+    [toast, setSolved, problem, value]
+  )
 
   const [solves, setSolves] = useState(null)
   const [solvesPending, setSolvesPending] = useState(false)
   const [solvesPage, setSolvesPage] = useState(1)
   const modalBodyRef = useRef(null)
-  const handleSetSolvesPage = useCallback(async (newPage) => {
-    const { kind, message, data } = await getSolves({
-      challId: problem.id,
-      limit: solvesPageSize,
-      offset: (newPage - 1) * solvesPageSize
-    })
-    if (kind !== 'goodChallengeSolves') {
-      toast({ body: message, type: 'error' })
-      return
-    }
-    setSolves(data.solves)
-    setSolvesPage(newPage)
-    modalBodyRef.current.scrollTop = 0
-  }, [problem.id, toast])
-  const onSolvesClick = useCallback(async (e) => {
-    e.preventDefault()
-    if (solvesPending) {
-      return
-    }
-    setSolvesPending(true)
-    const { kind, message, data } = await getSolves({
-      challId: problem.id,
-      limit: solvesPageSize,
-      offset: 0
-    })
-    setSolvesPending(false)
-    if (kind !== 'goodChallengeSolves') {
-      toast({ body: message, type: 'error' })
-      return
-    }
-    setSolves(data.solves)
-    setSolvesPage(1)
-  }, [problem.id, toast, solvesPending])
+  const handleSetSolvesPage = useCallback(
+    async (newPage) => {
+      const { kind, message, data } = await getSolves({
+        challId: problem.id,
+        limit: solvesPageSize,
+        offset: (newPage - 1) * solvesPageSize
+      })
+      if (kind !== 'goodChallengeSolves') {
+        toast({ body: message, type: 'error' })
+        return
+      }
+      setSolves(data.solves)
+      setSolvesPage(newPage)
+      modalBodyRef.current.scrollTop = 0
+    },
+    [problem.id, toast]
+  )
+  const onSolvesClick = useCallback(
+    async (e) => {
+      e.preventDefault()
+      if (solvesPending) {
+        return
+      }
+      setSolvesPending(true)
+      const { kind, message, data } = await getSolves({
+        challId: problem.id,
+        limit: solvesPageSize,
+        offset: 0
+      })
+      setSolvesPending(false)
+      if (kind !== 'goodChallengeSolves') {
+        toast({ body: message, type: 'error' })
+        return
+      }
+      setSolves(data.solves)
+      setSolvesPage(1)
+    },
+    [problem.id, toast, solvesPending]
+  )
   const onSolvesClose = useCallback(() => setSolves(null), [])
+
+  const parseDifficulty = (description) => {
+    const regexp = new RegExp('(?<=<difficulty style="display: none">)(.*?)(?=</difficulty>)')
+    const match = regexp.exec(description)
+    if (match) return match[0] ?? 'beginner'
+    return 'beginner'
+  }
 
   return (
     <div class={`frame ${classes.frame}`}>
       <div class='frame__body'>
         <div class='row u-no-padding'>
           <div class='col-6 u-no-padding'>
-            <div class='frame__title title'>{problem.category}/{problem.name}</div>
+            <div class='frame__title title'>
+              <span class={classes.problemCategory}>{problem.category} / </span> {problem.name}
+              <span class={classes.difficulty}> / {parseDifficulty(problem.description)}</span>
+            </div>
             <div class='frame__subtitle u-no-margin'>{problem.author}</div>
           </div>
           <div class='col-6 u-no-padding u-text-right'>
-            <a
-              class={`${classes.points} ${solvesPending ? classes.solvesPending : ''}`}
-              onClick={onSolvesClick}>
+            <a class={`${classes.points} ${solvesPending ? classes.solvesPending : ''}`} onClick={onSolvesClick}>
               {problem.solves}
               {problem.solves === 1 ? ' solve / ' : ' solves / '}
               {problem.points}
@@ -100,7 +116,9 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
           </div>
         </div>
 
-        <div class='content-no-padding u-center'><div class={`divider ${classes.divider}`} /></div>
+        <div class='content-no-padding u-center'>
+          <div class={`divider ${classes.divider}`} />
+        </div>
 
         <div class={`${classes.description} frame__subtitle`}>
           <Markdown content={problem.description} components={markdownComponents} />
@@ -110,7 +128,9 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
             <input
               autocomplete='off'
               autocorrect='off'
-              class={`form-group-input input-small ${classes.input} ${hasError ? 'input-error' : ''} ${solved ? 'input-success' : ''}`}
+              class={`form-group-input input-small ${classes.input} ${hasError ? 'input-error' : ''} ${
+                solved ? 'input-success' : ''
+              }`}
               placeholder={`Flag${solved ? ' (solved)' : ''}`}
               value={value}
               onChange={handleInputChange}
@@ -119,26 +139,22 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
           </div>
         </form>
 
-        {
-          hasDownloads &&
-            <div>
-              <p class='frame__subtitle u-no-margin'>Downloads</p>
-              <div class='tag-container'>
-                {
-                  problem.files.map(file => {
-                    return (
-                      <div class={`tag ${classes.tag}`} key={file.url}>
-                        <a native download href={`${file.url}`}>
-                          {file.name}
-                        </a>
-                      </div>
-                    )
-                  })
-                }
-
-              </div>
+        {hasDownloads && (
+          <div>
+            <p class='frame__subtitle u-no-margin'>Downloads</p>
+            <div class='tag-container'>
+              {problem.files.map((file) => {
+                return (
+                  <div class={`tag ${classes.tag}`} key={file.url}>
+                    <a native download href={`${file.url}`}>
+                      {file.name}
+                    </a>
+                  </div>
+                )
+              })}
             </div>
-        }
+          </div>
+        )}
       </div>
       <SolvesDialog
         solves={solves}
@@ -154,54 +170,64 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
   )
 }
 
-export default withStyles({
-  frame: {
-    marginBottom: '1em',
-    paddingBottom: '0.625em',
-    background: '#222'
-  },
-  description: {
-    '& a': {
-      display: 'inline',
-      padding: 0
+export default withStyles(
+  {
+    frame: {
+      marginBottom: '1em',
+      paddingBottom: '0.625em',
+      background: '#222',
+      borderLeft: '4px solid var(--cirrus-accent-border)'
     },
-    '& p': {
-      lineHeight: '1.4em',
-      fontSize: '1em',
-      marginTop: 0
+    description: {
+      '& a': {
+        display: 'inline',
+        padding: 0
+      },
+      '& p': {
+        lineHeight: '1.4em',
+        fontSize: '1em',
+        marginTop: 0
+      },
+      '& pre': {
+        whiteSpace: 'pre-wrap'
+      }
     },
-    '& pre': {
-      whiteSpace: 'pre-wrap'
+    divider: {
+      margin: '0.625em',
+      width: '80%'
+    },
+    problemCategory: {
+      color: 'var(--cirrus-primary)'
+    },
+    difficulty: {
+      color: 'gray'
+    },
+    points: {
+      marginTop: '0.75rem !important',
+      marginBottom: '0 !important',
+      cursor: 'pointer',
+      display: 'inline-block',
+      transition: 'opacity ease-in-out 0.2s'
+    },
+    solvesPending: {
+      opacity: '0.6',
+      pointerEvents: 'none',
+      cursor: 'default'
+    },
+    tag: {
+      background: '#111'
+    },
+    input: {
+      background: '#111',
+      color: '#fff !important'
+    },
+    submit: {
+      background: '#111',
+      color: '#fff',
+      '&:hover': {
+        background: '#222'
+      }
     }
   },
-  divider: {
-    margin: '0.625em',
-    width: '80%'
-  },
-  points: {
-    marginTop: '0.75rem !important',
-    marginBottom: '0 !important',
-    cursor: 'pointer',
-    display: 'inline-block',
-    transition: 'opacity ease-in-out 0.2s'
-  },
-  solvesPending: {
-    opacity: '0.6',
-    pointerEvents: 'none',
-    cursor: 'default'
-  },
-  tag: {
-    background: '#111'
-  },
-  input: {
-    background: '#111',
-    color: '#fff !important'
-  },
-  submit: {
-    background: '#111',
-    color: '#fff',
-    '&:hover': {
-      background: '#222'
-    }
-  }
-}, Problem)
+  Problem
+)
