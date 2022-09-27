@@ -85,7 +85,12 @@ export default class LocalProvider implements Provider {
               void reply.header('Content-Disposition', contentDisposition(upload.name))
               void reply.sendFile(path.relative(this.uploadDirectory, upload.filePath))
             } else {
-              reply.callNotFound()
+              const upload = this.uploadMap.get(key.replace('%2F', '/').split('/')[0])
+              if (upload != null) {
+                void reply.header('Cache-Control', 'public, max-age=31557600, immutable')
+                void reply.header('Content-Disposition', contentDisposition(upload.name))
+                void reply.sendFile(path.relative(this.uploadDirectory, upload.filePath))
+              } else reply.callNotFound()
             }
           }
         )
