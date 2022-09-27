@@ -55,7 +55,8 @@ export default withStyles(
   {
     nav: {
       fontFamily: 'var(--body-font) !important',
-      borderBottom: '1px solid rgba(255,255,255,0.2)'
+      borderBottom: '1px solid rgba(255,255,255,0.2)',
+      marginBottom: '20px'
     },
     link: {
       '&:focus': {

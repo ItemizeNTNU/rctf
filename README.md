@@ -20,3 +20,11 @@ Optionally, you can use [rCDS](https://github.com/redpwn/rcds) to deploy challen
 ## Development
 
 We would love your help! Please see [our CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Edits
+
+- [x] Updated theme and colors
+- [x] Fix local file upload provider
+- [x] Add challenge difficulty field
+- [ ] Add filtering on challenge difficulties
+- [ ] Update scoreboard graph/chart
