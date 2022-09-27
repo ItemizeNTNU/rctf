@@ -41,6 +41,17 @@ const Header = ({ classes, paths }) => {
               )}
             </Match>
           ))}
+        {!loggedIn && (
+          <Match path={'/register'}>
+            {({ matches }) => (
+              <li class={`${matches ? 'selected' : ''} ${classes.li}`}>
+                <a href={'/register'} class={classes.link}>
+                  Register
+                </a>
+              </li>
+            )}
+          </Match>
+        )}
         {loggedIn && (
           <li class={classes.li}>
             <LogoutButton class={classes.link} />
