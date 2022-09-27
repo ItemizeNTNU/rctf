@@ -5,6 +5,7 @@ import { submitFlag, getSolves } from '../api/challenges'
 import { useToast } from './toast'
 import SolvesDialog from './solves-dialog'
 import Markdown from './markdown'
+import { parseDifficulty } from '../util/challs'
 
 const ExternalLink = (props) => <a {...props} target='_blank' />
 
@@ -87,13 +88,6 @@ const Problem = ({ classes, problem, solved, setSolved }) => {
     [problem.id, toast, solvesPending]
   )
   const onSolvesClose = useCallback(() => setSolves(null), [])
-
-  const parseDifficulty = (description) => {
-    const regexp = new RegExp('(?<=<difficulty style="display: none">)(.*?)(?=</difficulty>)')
-    const match = regexp.exec(description)
-    if (match) return match[0] ?? 'beginner'
-    return 'beginner'
-  }
 
   return (
     <div class={`frame ${classes.frame}`}>

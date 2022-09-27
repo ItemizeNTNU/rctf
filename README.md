@@ -26,5 +26,5 @@ We would love your help! Please see [our CONTRIBUTING.md](CONTRIBUTING.md).
 - [x] Updated theme and colors
 - [x] Fix local file upload provider
 - [x] Add challenge difficulty field
-- [ ] Add filtering on challenge difficulties
+- [x] Add filtering on challenge difficulties
 - [ ] Update scoreboard graph/chart
