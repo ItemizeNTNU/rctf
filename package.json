@@ -35,13 +35,13 @@
     }
   },
   "dependencies": {
-    "@formkit/auto-animate": "1.0.0-beta.3",
     "@google-cloud/storage": "5.3.0",
     "aws-sdk": "2.726.0",
     "content-disposition": "0.5.3",
     "data-uri-to-buffer": "3.0.1",
     "deepmerge": "4.2.2",
     "dotenv": "8.2.0",
+    "echarts": "5.4.0",
     "email-validator": "2.0.4",
     "fastify": "3.2.0",
     "fastify-cors": "4.1.0",

@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useMemo, useRef } from 'preact/hooks'
+import { useCallback, useState, useEffect, useMemo } from 'preact/hooks'
 
 import config from '../config'
 import withStyles from '../components/jss'
@@ -9,7 +9,6 @@ import { useToast } from '../components/toast'
 import { getChallenges, getPrivateSolves } from '../api/challenges'
 
 import { parseDifficulty } from '../util/challs'
-import autoAnimate from '@formkit/auto-animate'
 
 const loadStates = {
   pending: 0,
@@ -25,12 +24,7 @@ const Challenges = ({ classes }) => {
   const [showSolved, setShowSolved] = useState(challPageState.showSolved || false)
   const [solveIDs, setSolveIDs] = useState([])
   const [loadState, setLoadState] = useState(loadStates.pending)
-  const parent = useRef(null)
   const { toast } = useToast()
-
-  useEffect(() => {
-    parent.current && autoAnimate(parent.current)
-  }, [parent])
 
   const setSolved = useCallback((id) => {
     setSolveIDs((solveIDs) => {
@@ -282,7 +276,7 @@ const Challenges = ({ classes }) => {
           </div>
         </div>
       </div>
-      <div class='col-6' ref={parent}>
+      <div class='col-6'>
         {problemsToDisplay.map((problem) => {
           return (
             <Problem key={problem.id} problem={problem} solved={solveIDs.includes(problem.id)} setSolved={setSolved} />
