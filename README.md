@@ -27,4 +27,4 @@ We would love your help! Please see [our CONTRIBUTING.md](CONTRIBUTING.md).
 - [x] Fix local file upload provider
 - [x] Add challenge difficulty field
 - [x] Add filtering on challenge difficulties
-- [ ] Update scoreboard graph/chart
+- [x] Update scoreboard graph/chart
